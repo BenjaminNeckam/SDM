@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import org.jfree.ui.RefineryUtilities;
 
 import at.ac.univie.Plot.Plot2D;
-import at.ac.univie.interfaces.InitInterface;
 
-public class KMeans implements InitInterface {
+
+public class KMeans {
 	
 	public static void main(String[] args) {
 		int dimension = 2;
