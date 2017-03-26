@@ -5,15 +5,13 @@ import java.util.Random;
 
 public class GaussianClusterGenerator {
 	ArrayList<Point> points;
-	int deviation;
-	float density;
+	float deviation;
 	float minPointDistance;
 	float rangeMin;
 	float rangeMax;
 
-	public GaussianClusterGenerator(int deviation, float density, float distance,float rangeMin, float rangeMax){
+	public GaussianClusterGenerator(float deviation, float distance,float rangeMin, float rangeMax){
 		this.deviation = deviation;
-		this.density = density;
 		this.minPointDistance = distance;
 		this.rangeMin = rangeMin;
 		this.rangeMax = rangeMax;
@@ -34,7 +32,7 @@ public class GaussianClusterGenerator {
 		
 			
 			
-			return null;
+			return mainPoints;
 	}
 
 	public ArrayList<Float> generateCoordinates(int d){
@@ -54,7 +52,7 @@ public class GaussianClusterGenerator {
 		Random random = new Random();
 		float temp;
 		for(int i=0; i<d;i++) {
-			temp = (float) (point.getCoordinates().get(i)*random.nextGaussian()*deviation);
+			temp = (float) (point.getCoordinates().get(i)+random.nextGaussian()*deviation);
 			coordinates.add(temp);
 		}
 		return coordinates;
@@ -76,10 +74,10 @@ public class GaussianClusterGenerator {
 		boolean distanceGood = false;
 		for(int i=0; i<k;i++) {
 			if(i==0) {
-				mainPoints.add(new Point(generateCoordinates(d)));
+				mainPoints.add(new Point(generateCoordinates(d),i));
 			}else {
 				do {
-					Point tempPoint = new Point(generateCoordinates(d));
+					Point tempPoint = new Point(generateCoordinates(d),i);
 					distanceGood = isDistanceGood(mainPoints.get(i-1), tempPoint, d, minPointDistance);
 					if(distanceGood) {
 						mainPoints.add(tempPoint);
@@ -93,7 +91,7 @@ public class GaussianClusterGenerator {
 	public ArrayList<Point> generateGaussianDistPoints(int k,int n,int d,ArrayList<Point> mainPoints){
 		ArrayList<Point> points = new ArrayList<>();
 		for(int i=0;i<(n-k);i++){
-			Point tmp = new Point(generateGaussianCoordinates(d, mainPoints.get(i%k)));
+			Point tmp = new Point(generateGaussianCoordinates(d, mainPoints.get(i%k)),i%k);
 			points.add(tmp);
 		}
 		return points;

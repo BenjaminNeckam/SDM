@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class Point {
 	ArrayList<Float> coordinates;
+	int clusterNumb;
 
 	public Point() {}
 
-	public Point(ArrayList<Float> coordinates) {
+	public Point(ArrayList<Float> coordinates, int clusterNumb) {
 		this.coordinates = coordinates;
+		this.clusterNumb = clusterNumb;
 	}
 
 	public ArrayList<Float> getCoordinates() {
@@ -19,9 +21,18 @@ public class Point {
 		this.coordinates = coordinates;
 	}
 
+	
+	public int getClusterNumb() {
+		return clusterNumb;
+	}
+
+	public void setClusterNumb(int clusterNumb) {
+		this.clusterNumb = clusterNumb;
+	}
+
 	@Override
 	public String toString() {
-		String coord = "[ ";
+		String coord = "Cluster: " + getClusterNumb() + " -> [ ";
 		
 		for(int i=0;i<coordinates.size();i++){
 			if(i==0){
