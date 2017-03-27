@@ -13,7 +13,7 @@ public class KMeans {
 		int dimension = 10;
 		int numbClusters = 5;
 		int numbPoints = 100;
-		float standardDeviation = 2;
+		float standardDeviation = 9;
 		float minDistance = 2;
 		int minValue = 0;
 		int maxValue = 50;
