@@ -29,10 +29,12 @@ public class GaussianClusterGenerator {
 //		for(Point point:points){
 //			System.out.println(point.toString());
 //		}
-		
-			
-			
 			return mainPoints;
+	}
+	
+	public ArrayList<Point> randomPartition(int k, int n, int d){
+		ArrayList<Point> points = generateGaussianDistPartition(k, n, d);
+		return points;
 	}
 
 	public ArrayList<Float> generateCoordinates(int d){
@@ -46,13 +48,26 @@ public class GaussianClusterGenerator {
 		return coordinates;
 	}
 	
-	//TODO potential bug when generating Gaussian distributed
 	public ArrayList<Float> generateGaussianCoordinates(int d, Point point){
 		ArrayList<Float> coordinates = new ArrayList<>();
 		Random random = new Random();
 		float temp;
 		for(int i=0; i<d;i++) {
 			temp = (float) (point.getCoordinates().get(i)+random.nextGaussian()*deviation);
+			coordinates.add(temp);
+		}
+		return coordinates;
+	}
+	
+	
+	public ArrayList<Float> generateGaussianCoordinates(int d){
+		ArrayList<Float> coordinates = new ArrayList<>();
+		Random random = new Random();
+		float temp;
+		float temp2;
+		for(int i=0; i<d;i++) {
+			temp2 = rangeMin + (rangeMax-rangeMin)*random.nextFloat();
+			temp = (float) (temp2 + random.nextGaussian()*deviation);
 			coordinates.add(temp);
 		}
 		return coordinates;
@@ -92,6 +107,15 @@ public class GaussianClusterGenerator {
 		ArrayList<Point> points = new ArrayList<>();
 		for(int i=0;i<(n-k);i++){
 			Point tmp = new Point(generateGaussianCoordinates(d, mainPoints.get(i%k)),i%k);
+			points.add(tmp);
+		}
+		return points;
+	}
+	
+	public ArrayList<Point> generateGaussianDistPartition(int k, int n, int d){
+		ArrayList<Point> points = new ArrayList<>();
+		for(int i=0;i<(n-k);i++){
+			Point tmp = new Point(generateGaussianCoordinates(d),i%k);
 			points.add(tmp);
 		}
 		return points;
