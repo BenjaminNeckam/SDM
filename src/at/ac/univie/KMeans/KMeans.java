@@ -18,7 +18,8 @@ public class KMeans {
 		int minValue = 0;
 		int maxValue = 50;
 		GaussianClusterGenerator generator = new GaussianClusterGenerator(standardDeviation, minDistance, minValue, maxValue);
-		ArrayList<Point> points = generator.generateCluster(numbClusters, numbPoints, dimension);
+		//Initial Strategie b)
+		ArrayList<Point> points = generator.randomPoints(numbClusters, numbPoints, dimension);
 		
 		Plot2D scatterplotdemo4 = new Plot2D("K-Means",points,numbClusters);
         scatterplotdemo4.pack();

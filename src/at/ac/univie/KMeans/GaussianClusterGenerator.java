@@ -17,7 +17,7 @@ public class GaussianClusterGenerator {
 		this.rangeMax = rangeMax;
 	}
 
-	public ArrayList<Point> generateCluster(int k, int n, int d){
+	public ArrayList<Point> randomPoints(int k, int n, int d){
 		ArrayList<Point> mainPoints = generateMainPoints(k,d);
 		mainPoints.addAll(generateGaussianDistPoints(k, n, d, mainPoints));
 		//ArrayList<Point> points = generateGaussianDistPoints(k, n, d, mainPoints);
