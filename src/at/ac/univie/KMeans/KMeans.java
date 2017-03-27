@@ -10,7 +10,7 @@ import at.ac.univie.Plot.Plot2D;
 public class KMeans {
 	
 	public static void main(String[] args) {
-		int dimension = 5;
+		int dimension = 10;
 		int numbClusters = 5;
 		int numbPoints = 100;
 		float standardDeviation = 2;
