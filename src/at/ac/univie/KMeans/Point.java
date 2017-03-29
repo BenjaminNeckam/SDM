@@ -30,6 +30,15 @@ public class Point {
 		this.clusterNumb = clusterNumb;
 	}
 
+	public void addNewCoordinate(float value){
+		if(this.coordinates==null){
+			this.coordinates = new ArrayList<>();
+			this.coordinates.add(value);
+		}else{
+			this.coordinates.add(value);
+		}
+		
+	}
 	@Override
 	public String toString() {
 		String coord = "Cluster: " + getClusterNumb() + " -> [ ";

@@ -32,10 +32,6 @@ public class GaussianClusterGenerator {
 			return mainPoints;
 	}
 	
-	public ArrayList<Point> randomPartition(int k, int n, int d){
-		ArrayList<Point> points = generateGaussianDistPartition(k, n, d);
-		return points;
-	}
 
 	public ArrayList<Float> generateCoordinates(int d){
 		ArrayList<Float> coordinates = new ArrayList<>();
@@ -59,19 +55,6 @@ public class GaussianClusterGenerator {
 		return coordinates;
 	}
 	
-	
-	public ArrayList<Float> generateGaussianCoordinates(int d){
-		ArrayList<Float> coordinates = new ArrayList<>();
-		Random random = new Random();
-		float temp;
-		float temp2;
-		for(int i=0; i<d;i++) {
-			temp2 = rangeMin + (rangeMax-rangeMin)*random.nextFloat();
-			temp = (float) (temp2 + random.nextGaussian()*deviation);
-			coordinates.add(temp);
-		}
-		return coordinates;
-	}
 
 	public boolean isDistanceGood(Point point1, Point point2, int d, float minPointDistance) {
 		ArrayList<Float> coordinates1 = point1.getCoordinates();
@@ -112,12 +95,4 @@ public class GaussianClusterGenerator {
 		return points;
 	}
 	
-	public ArrayList<Point> generateGaussianDistPartition(int k, int n, int d){
-		ArrayList<Point> points = new ArrayList<>();
-		for(int i=0;i<(n-k);i++){
-			Point tmp = new Point(generateGaussianCoordinates(d),i%k);
-			points.add(tmp);
-		}
-		return points;
-	}
 }
