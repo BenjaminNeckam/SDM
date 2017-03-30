@@ -1,13 +1,17 @@
 package at.ac.univie.KMeans;
 
 import java.awt.Dimension;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.jfree.ui.RefineryUtilities;
 
 import at.ac.univie.Plot.Plot2D;
 
 public class KMeans {
+
+	private static Scanner scanner;
 
 	public static void main(String[] args) {
 		int dimension = 2;
@@ -36,7 +40,7 @@ public class KMeans {
 		Point point5 = new Point();
 		point5.addNewCoordinate((float)3.5);
 		point5.addNewCoordinate((float)4.5);
-		point5.setClusterNumb(0);
+		point5.setClusterNumb(1);
 		
 		
 		Point point3 = new Point();
@@ -62,6 +66,11 @@ public class KMeans {
 		scatterplotdemo4.setVisible(true);
 
 		KMeans.lloyd(points, numbClusters, dimension);
+		
+		Plot2D scatterplotdemo42 = new Plot2D("K-Means", points, numbClusters);
+		scatterplotdemo42.pack();
+		RefineryUtilities.centerFrameOnScreen(scatterplotdemo42);
+		scatterplotdemo42.setVisible(true);
 	}
 
 	public static ArrayList<Point> lloyd(ArrayList<Point> points, int k, int d) {
@@ -69,9 +78,21 @@ public class KMeans {
 		System.out.println("\nCENTROIDS\n");
 		for (Point point : centroids) {
 			System.out.println(point.toString() + "\n");
+			System.out.println("L2-norm: " + point.getL2Norm() + "\n");
 		}
-		
-
+		System.out.println("Before change\n");
+		for (Point point : points) {
+			System.out.println(point.toString() + "\n");
+			
+		}
+		for(Point point:points){
+			distAndChangeCluster(point, centroids);
+		}
+		System.out.println("After change\n");
+		for (Point point : points) {
+			System.out.println(point.toString() + "\n");
+			
+		}
 		return null;
 	}
 
@@ -117,17 +138,24 @@ public class KMeans {
 		return counter;
 	}
 	
-	public static float dist(Point point,ArrayList<Point> centroids){
-		int newClustNumb;
-		float sum=0;
-		for(int i=0;i<point.getCoordinates().size();i++){
-			sum+=point.getCoordinates().get(i);
-		}
-		float l2=(float)Math.sqrt(sum);
-		//Calc l2 for every centroid and compare
+	public static void distAndChangeCluster(Point point,ArrayList<Point> centroids){
+		float normPoint = point.getL2Norm();
+		float tmp=Math.abs(normPoint-getCentroidPoint(centroids, point.getClusterNumb()).getL2Norm());
 		for(Point centroid:centroids){
-			//if()
+			if(Math.abs(normPoint-centroid.getL2Norm())<tmp){
+				tmp=Math.abs(normPoint-centroid.getL2Norm());
+				point.setClusterNumb(centroid.getClusterNumb());
+			}
 		}
-		return 0;
 	}
+	
+	public static Point getCentroidPoint(ArrayList<Point> centroids, int clusterNumb){
+		for(Point centroid:centroids){
+			if(centroid.getClusterNumb()==clusterNumb){
+				return centroid;
+			}
+		}
+		return null;
+	}
+	
 }

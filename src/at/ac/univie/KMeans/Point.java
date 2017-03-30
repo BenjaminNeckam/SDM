@@ -37,7 +37,15 @@ public class Point {
 		}else{
 			this.coordinates.add(value);
 		}
-		
+	}
+	
+	public float getL2Norm(){
+		float sum=0;
+		for(int i=0;i<coordinates.size();i++){
+			sum+=Math.pow(coordinates.get(i), 2);
+		}
+		float norm=(float)Math.sqrt(sum);
+		return norm;
 	}
 	@Override
 	public String toString() {
