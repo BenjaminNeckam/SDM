@@ -1,10 +1,6 @@
 package at.ac.univie.KMeans;
 
-import java.awt.Dimension;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import org.jfree.ui.RefineryUtilities;
 
 import at.ac.univie.Plot.Plot2D;
@@ -13,86 +9,58 @@ public class KMeans {
 
 	public static void main(String[] args) {
 		int dimension = 2;
-		int numbClusters = 3;
-		int numbPoints = 100;
-		float standardDeviation = 5;
+		int numbClusters = 5;
+		int numbPoints = 1000;
+		float standardDeviation = 50;
 		float minDistance = 2;
 		int minValue = 0;
-		int maxValue = 20;
+		int maxValue = 100;
 		GaussianClusterGenerator generator = new GaussianClusterGenerator(standardDeviation, minDistance, minValue,
 				maxValue);
 		ArrayList<Point> points = generator.randomPoints(numbClusters, numbPoints, dimension);
 		
-		//FOR TESTS ONLY
-		/*ArrayList<Point> points = new ArrayList<>();
-		Point point1 = new Point();
-		point1.addNewCoordinate(1);
-		point1.addNewCoordinate(2);
-		point1.setClusterNumb(0);
 		
-		Point point2 = new Point();
-		point2.addNewCoordinate(3);
-		point2.addNewCoordinate(4);
-		point2.setClusterNumb(0);
-		
-		Point point5 = new Point();
-		point5.addNewCoordinate((float)3.5);
-		point5.addNewCoordinate((float)4.5);
-		point5.setClusterNumb(1);
-		
-		
-		Point point3 = new Point();
-		point3.addNewCoordinate(5);
-		point3.addNewCoordinate(6);
-		point3.setClusterNumb(1);
-		
-		Point point4 = new Point();
-		point4.addNewCoordinate(7);
-		point4.addNewCoordinate(8);
-		point4.setClusterNumb(1);
-		
-		points.add(point1);
-		points.add(point2);
-		points.add(point3);
-		points.add(point4);
-		points.add(point5);*/
-		//TESTS END
-		
-		Plot2D scatterplotdemo4 = new Plot2D("K-Means", points, numbClusters);
+		Plot2D scatterplotdemo4 = new Plot2D("K-Means Start", points, numbClusters);
 		scatterplotdemo4.pack();
 		RefineryUtilities.centerFrameOnScreen(scatterplotdemo4);
 		scatterplotdemo4.setVisible(true);
 
 		KMeans.lloyd(points, numbClusters, dimension);
 		
-		Plot2D scatterplotdemo42 = new Plot2D("K-Means", points, numbClusters);
+		Plot2D scatterplotdemo42 = new Plot2D("K-Means Clustered", points, numbClusters);
 		scatterplotdemo42.pack();
 		RefineryUtilities.centerFrameOnScreen(scatterplotdemo42);
 		scatterplotdemo42.setVisible(true);
 	}
-
-	//TODO Lloyd always one iteratio, why?
-	public static ArrayList<Point> lloyd(ArrayList<Point> points, int k, int d) {
+	
+	/**
+	 * Llyod with initial strategy a)
+	 * @param points
+	 * @param k
+	 * @param d
+	 */
+	public static void lloyd(ArrayList<Point> points, int k, int d) {
 		ArrayList<Point> centroids = getCentroidOfCluster(points, d, k);
-		ArrayList<Point> centroidsTmp;
+		ArrayList<Point> centroidsTmp = new ArrayList<>();
 		int counter=0;
-		do{
+		
+		for(int x=0;x<10;x++){
 			counter++;
-			centroidsTmp = centroids;
-			/*System.out.println("\nCENTROIDS\n");
-			for (Point point : centroidsTmp) {
-				System.out.println(point.toString() + "\n");
-				System.out.println("L2-norm: " + point.getL2Norm() + "\n");
-			}*/
+			centroidsTmp.clear();
+			centroidsTmp.addAll(centroids);
 			
 			for(Point point:points){
-				distAndChangeCluster(point, centroidsTmp);
+				distAndChangeCluster(point, centroids);
 			}
-			//Potential bug, maybe write other function?
-			centroids=getCentroidOfCluster(points, d, k);
-		}while(centroidsTmp.equals(centroids));
-		System.out.println("Iterations: " + counter + "\n");
-		return null;
+			
+			centroids.clear();
+			ArrayList<Point> tmp = new ArrayList<>(getCentroidOfCluster(points, d, k));
+			
+			for(int i=0;i<tmp.size();i++){
+				centroids.add(tmp.get(i));
+			}
+		}
+
 	}
 
 	/**
@@ -117,6 +85,7 @@ public class KMeans {
 
 			for (int i = 0; i < k; i++) {
 				numbPointsInCluster = CountNumberPointsOfCluster(points, i);
+				System.out.println("Cluster " + i + " points: " + numbPointsInCluster + "\n");
 				centroid.get(i).addNewCoordinate(zaehler[i] / numbPointsInCluster);
 			}
 			for (int i = 0; i < k; i++) {
@@ -124,6 +93,7 @@ public class KMeans {
 			}
 			counter++;
 		} while (counter < d);
+		
 		return centroid;
 	}
 
@@ -138,11 +108,13 @@ public class KMeans {
 	}
 	
 	public static void distAndChangeCluster(Point point,ArrayList<Point> centroids){
-		float normPoint = point.getL2Norm();
-		float tmp=Math.abs(normPoint-getCentroidPoint(centroids, point.getClusterNumb()).getL2Norm());
+		//float tmp=Math.abs(getCentroidPoint(centroids, point.getClusterNumb()).getL2Norm()-normPoint);
+		float tmp = dist(point,centroids.get(point.getClusterNumb()));
+		float tmpDist=0;
 		for(Point centroid:centroids){
-			if(Math.abs(normPoint-centroid.getL2Norm())<tmp){
-				tmp=Math.abs(normPoint-centroid.getL2Norm());
+			tmpDist=dist(point,centroid);
+			if(tmpDist<tmp){
+				tmp=tmpDist;
 				point.setClusterNumb(centroid.getClusterNumb());
 			}
 		}
@@ -155,6 +127,15 @@ public class KMeans {
 			}
 		}
 		return null;
+	}
+	
+	public static float dist(Point point1, Point point2){
+		float sum=0;
+		for(int i=0;i<point1.getCoordinates().size();i++){
+			sum+=Math.pow(point1.getCoordinates().get(i)-point2.getCoordinates().get(i), 2);
+		}
+		float norm=(float)Math.sqrt(sum);
+		return norm;
 	}
 	
 }

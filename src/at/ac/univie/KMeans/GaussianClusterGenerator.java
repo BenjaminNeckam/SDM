@@ -21,10 +21,6 @@ public class GaussianClusterGenerator {
 		ArrayList<Point> mainPoints = generateMainPoints(k,d);
 		mainPoints.addAll(generateGaussianDistPoints(k, n, d, mainPoints));
 		//ArrayList<Point> points = generateGaussianDistPoints(k, n, d, mainPoints);
-		System.out.println("Main points:\n");
-		for(Point point:mainPoints){
-			System.out.println(point.toString());
-		}
 //		System.out.println("Other points:\n");
 //		for(Point point:points){
 //			System.out.println(point.toString());
