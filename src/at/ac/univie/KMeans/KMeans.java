@@ -11,22 +11,20 @@ import at.ac.univie.Plot.Plot2D;
 
 public class KMeans {
 
-	private static Scanner scanner;
-
 	public static void main(String[] args) {
 		int dimension = 2;
-		int numbClusters = 2;
-		int numbPoints = 10;
+		int numbClusters = 3;
+		int numbPoints = 100;
 		float standardDeviation = 5;
 		float minDistance = 2;
 		int minValue = 0;
 		int maxValue = 20;
 		GaussianClusterGenerator generator = new GaussianClusterGenerator(standardDeviation, minDistance, minValue,
 				maxValue);
-		//ArrayList<Point> points = generator.randomPoints(numbClusters, numbPoints, dimension);
+		ArrayList<Point> points = generator.randomPoints(numbClusters, numbPoints, dimension);
 		
 		//FOR TESTS ONLY
-		ArrayList<Point> points = new ArrayList<>();
+		/*ArrayList<Point> points = new ArrayList<>();
 		Point point1 = new Point();
 		point1.addNewCoordinate(1);
 		point1.addNewCoordinate(2);
@@ -57,7 +55,7 @@ public class KMeans {
 		points.add(point2);
 		points.add(point3);
 		points.add(point4);
-		points.add(point5);
+		points.add(point5);*/
 		//TESTS END
 		
 		Plot2D scatterplotdemo4 = new Plot2D("K-Means", points, numbClusters);
@@ -73,26 +71,27 @@ public class KMeans {
 		scatterplotdemo42.setVisible(true);
 	}
 
+	//TODO Lloyd always one iteratio, why?
 	public static ArrayList<Point> lloyd(ArrayList<Point> points, int k, int d) {
 		ArrayList<Point> centroids = getCentroidOfCluster(points, d, k);
-		System.out.println("\nCENTROIDS\n");
-		for (Point point : centroids) {
-			System.out.println(point.toString() + "\n");
-			System.out.println("L2-norm: " + point.getL2Norm() + "\n");
-		}
-		System.out.println("Before change\n");
-		for (Point point : points) {
-			System.out.println(point.toString() + "\n");
+		ArrayList<Point> centroidsTmp;
+		int counter=0;
+		do{
+			counter++;
+			centroidsTmp = centroids;
+			/*System.out.println("\nCENTROIDS\n");
+			for (Point point : centroidsTmp) {
+				System.out.println(point.toString() + "\n");
+				System.out.println("L2-norm: " + point.getL2Norm() + "\n");
+			}*/
 			
-		}
-		for(Point point:points){
-			distAndChangeCluster(point, centroids);
-		}
-		System.out.println("After change\n");
-		for (Point point : points) {
-			System.out.println(point.toString() + "\n");
-			
-		}
+			for(Point point:points){
+				distAndChangeCluster(point, centroidsTmp);
+			}
+			//Potential bug, maybe write other function?
+			centroids=getCentroidOfCluster(points, d, k);
+		}while(centroidsTmp.equals(centroids));
+		System.out.println("Iterations: " + counter + "\n");
 		return null;
 	}
 
