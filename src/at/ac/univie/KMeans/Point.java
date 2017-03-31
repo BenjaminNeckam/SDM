@@ -39,6 +39,21 @@ public class Point {
 		}
 	}
 	
+	/**
+	 * Overwrite an exitisting coordinate
+	 * @param index
+	 * @param value
+	 */
+	public void overwriteCoordinate(int index,float value){
+		if(this.coordinates==null){
+			this.coordinates = new ArrayList<>();
+			this.coordinates.add(value);
+		}else{
+			this.coordinates.remove(index);
+			this.coordinates.add(value);
+		}
+	}
+	
 	@Override
 	public String toString() {
 		String coord = "Cluster: " + getClusterNumb() + " -> [ ";

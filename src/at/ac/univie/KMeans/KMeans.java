@@ -11,15 +11,16 @@ public class KMeans {
 
 	public static void main(String[] args) {
 		int dimension = 2; //Dimension
-		int numbClusters = 3; //Number of clusters
+		int numbClusters = 4; //Number of clusters
 		int numbPoints = 100; //Total number of points
 		float standardDeviation = 5; //Standarddeviation for generation of points with Gaussian distribution
 		float minDistance = 2; //Minimum distance between the main points for good distribution
 		int minValue = 0; // *For data generation* Minimum value for main point
 		int maxValue = 20; // *For data generation* Maximu value for main point
 		boolean lloydA=false; //Parameter for initial strategy a) (lloydA = true) and strategy b) (lloydA = false)
+		boolean macQueen=false; //Parameter for initial strategy a) (macQueen = true) and strategy b) (macQueen = false)
 		
-		//Lloyd
+		//Lloyd and MacQueen data generation
 		GaussianClusterGenerator generator = new GaussianClusterGenerator(standardDeviation, minDistance, minValue,
 				maxValue);
 		ArrayList<Point> points = generator.randomPoints(numbClusters, numbPoints, dimension);
@@ -30,7 +31,10 @@ public class KMeans {
 		scatterplotdemo4.setVisible(true);
 
 		//Lloyd algorithm call
-		KMeans.lloyd(points, numbClusters, dimension,lloydA);
+		//KMeans.lloyd(points, numbClusters, dimension,lloydA);
+		
+		//MacQueen algorithm call
+		KMeans.macQueen(points, numbClusters, dimension, macQueen);
 		
 		Plot2D scatterplotdemo42 = new Plot2D("K-Means Clustered", points, numbClusters);
 		scatterplotdemo42.pack();
@@ -62,8 +66,6 @@ public class KMeans {
 				centroids.add(points.get(numb));
 				centroids.get(i).setClusterNumb(i);
 			}
-			
-			
 		}
 		
 		ArrayList<Point> centroidsTmp = new ArrayList<>();
@@ -99,6 +101,35 @@ public class KMeans {
 	}
 
 	/**
+	 * MacQueen algorithm
+	 * @param points
+	 * @param k
+	 * @param d
+	 * @param macQueen
+	 */
+	public static void macQueen(ArrayList<Point> points, int k, int d,boolean macQueen){
+		ArrayList<Point> centroids;
+		ArrayList<Integer> control = new ArrayList<>();
+		Random random = new Random();
+		int numb;
+		if(macQueen==true){
+			centroids = getCentroidOfCluster(points, d, k);
+		}else{
+			centroids= new ArrayList<>();
+			for(int i=0;i<k;i++){
+				do{
+					numb = random.nextInt(points.size());
+				}while(control.contains(numb));
+				control.add(numb);
+				centroids.add(points.get(numb));
+				centroids.get(i).setClusterNumb(i);
+			}
+		}
+		
+		distAndChangeClusterMacQueen(points, centroids, d, k);
+	}
+	
+	/**
 	 * Computes the centroids of all clusters 
 	 * 
 	 * @param point
@@ -130,6 +161,41 @@ public class KMeans {
 		} while (counter < d);
 		
 		return centroid;
+	}
+	
+	/**
+	 * Method for MacQueen to update the centroids
+	 * @param centroids
+	 * @param points
+	 * @param d
+	 * @param k
+	 */
+	//BUG???
+	public static void centroidUpdate(ArrayList<Point> centroids,ArrayList<Point> points, int d, int k) {
+		/*ArrayList<Point> centroid = new ArrayList<>();
+		for (int i = 0; i < k; i++) {
+			centroid.add(new Point());
+			centroid.get(i).setClusterNumb(i);
+		}*/
+		float[] zaehler = new float[k];
+		int counter = 0;
+		do {
+			for (Point point : points) {
+				zaehler[point.getClusterNumb()] += point.getCoordinates().get(counter);
+			}
+			int numbPointsInCluster = 0;
+			
+			
+			for (int i = 0; i < k; i++) {
+				numbPointsInCluster = CountNumberPointsOfCluster(points, i);
+				//System.out.println("Cluster " + i + " points: " + numbPointsInCluster + "\n");
+				centroids.get(i).overwriteCoordinate(counter,(zaehler[i] / numbPointsInCluster));
+			}
+			for (int i = 0; i < k; i++) {
+				zaehler[i] = 0;
+			}
+			counter++;
+		} while (counter < d);
 	}
 
 	/**
@@ -163,6 +229,31 @@ public class KMeans {
 			if(tmpDist<tmp){
 				tmp=tmpDist;
 				point.setClusterNumb(centroid.getClusterNumb());
+			}
+		}
+	}
+	
+	/**
+	 * Computes distance and change clusters (MacQueen)
+	 * @param points
+	 * @param centroids
+	 * @param d
+	 * @param k
+	 */
+	public static void distAndChangeClusterMacQueen(ArrayList<Point> points,ArrayList<Point> centroids,int d, int k){
+		float tmp;
+		float tmpDist=0;
+		for(Point point:points){
+			tmp=dist(point,centroids.get(point.getClusterNumb()));
+			for(Point centroid:centroids){
+				tmpDist=dist(point,centroid);
+				
+				if(tmpDist<tmp){
+					tmp=tmpDist;
+					point.setClusterNumb(centroid.getClusterNumb());
+					
+					centroidUpdate(centroids, points, d, k);
+				}
 			}
 		}
 	}
