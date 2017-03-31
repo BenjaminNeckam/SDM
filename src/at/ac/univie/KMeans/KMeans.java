@@ -10,11 +10,11 @@ public class KMeans {
 	public static void main(String[] args) {
 		int dimension = 2;
 		int numbClusters = 5;
-		int numbPoints = 1000;
-		float standardDeviation = 50;
+		int numbPoints = 200;
+		float standardDeviation = 10;
 		float minDistance = 2;
 		int minValue = 0;
-		int maxValue = 100;
+		int maxValue = 20;
 		GaussianClusterGenerator generator = new GaussianClusterGenerator(standardDeviation, minDistance, minValue,
 				maxValue);
 		ArrayList<Point> points = generator.randomPoints(numbClusters, numbPoints, dimension);
@@ -44,7 +44,7 @@ public class KMeans {
 		ArrayList<Point> centroidsTmp = new ArrayList<>();
 		int counter=0;
 		
-		for(int x=0;x<10;x++){
+		do{
 			counter++;
 			centroidsTmp.clear();
 			centroidsTmp.addAll(centroids);
@@ -59,8 +59,18 @@ public class KMeans {
 			for(int i=0;i<tmp.size();i++){
 				centroids.add(tmp.get(i));
 			}
-		}
-
+			
+//			System.out.println("Centroids: \n");
+//			for(Point point:centroids){
+//				System.out.println(point.toString());
+//			}
+//			System.out.println("CentroidsTmp: \n");
+//			for(Point point:centroidsTmp){
+//				System.out.println(point.toString());
+//			}
+//			System.out.println("Equality: " + equals(centroids, centroidsTmp));
+		}while(!equals(centroids, centroidsTmp));
+		System.out.println("Iterations until convergence: " + counter + "\n");
 	}
 
 	/**
@@ -85,7 +95,7 @@ public class KMeans {
 
 			for (int i = 0; i < k; i++) {
 				numbPointsInCluster = CountNumberPointsOfCluster(points, i);
-				System.out.println("Cluster " + i + " points: " + numbPointsInCluster + "\n");
+				//System.out.println("Cluster " + i + " points: " + numbPointsInCluster + "\n");
 				centroid.get(i).addNewCoordinate(zaehler[i] / numbPointsInCluster);
 			}
 			for (int i = 0; i < k; i++) {
@@ -136,6 +146,25 @@ public class KMeans {
 		}
 		float norm=(float)Math.sqrt(sum);
 		return norm;
+	}
+	
+	public static boolean equals(ArrayList<Point> list1, ArrayList<Point> list2){
+		int counter=0;
+		float epsilon=(float) 0.0000001;
+		if(list1.size()==list2.size()){
+			for(Point point:list1){
+				for(int i=0;i<point.getCoordinates().size();i++){
+					//System.out.println("Comparison: " + point.getCoordinates().get(i) + " : " + list2.get(counter).getCoordinates().get(i) + "\n");
+					if(Math.abs((point.getCoordinates().get(i)-list2.get(counter).getCoordinates().get(i)))>=epsilon){
+						return false;
+					}
+				}
+				counter++;
+			}
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 }
