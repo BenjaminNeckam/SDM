@@ -25,6 +25,12 @@ import at.ac.univie.KMeans.Point;
 public class Plot2D extends ApplicationFrame {
 	int dimension;
 
+	/**
+	 * Constructor
+	 * @param title
+	 * @param points
+	 * @param d
+	 */
 	public Plot2D(String title,ArrayList<Point> points,int d) {
 		super(title);
 		this.dimension=d;
@@ -33,6 +39,11 @@ public class Plot2D extends ApplicationFrame {
 		add(jpanel);
 	}
 
+	/**
+	 * Properties for Panel to visualize dataset
+	 * @param points
+	 * @return
+	 */
 	private JPanel createDemoPanel(ArrayList<Point> points) {
 		final JFreeChart jfreechart = ChartFactory.createScatterPlot("K-Means", "X", "Y", createDataset(points),
 				PlotOrientation.VERTICAL, true, true, false);
@@ -51,6 +62,11 @@ public class Plot2D extends ApplicationFrame {
 		return new ChartPanel(jfreechart);
 	}
 
+	/**
+	 * Creates dataset for plot
+	 * @param points
+	 * @return
+	 */
 	private XYDataset createDataset(ArrayList<Point> points) {
 		XYSeriesCollection collection = new XYSeriesCollection();
 		List<XYSeries> series = new ArrayList<XYSeries>();

@@ -10,6 +10,13 @@ public class GaussianClusterGenerator {
 	float rangeMin;
 	float rangeMax;
 
+	/**
+	 * Constructor for Gaussian distribution generator
+	 * @param deviation
+	 * @param distance
+	 * @param rangeMin
+	 * @param rangeMax
+	 */
 	public GaussianClusterGenerator(float deviation, float distance,float rangeMin, float rangeMax){
 		this.deviation = deviation;
 		this.minPointDistance = distance;
@@ -17,6 +24,13 @@ public class GaussianClusterGenerator {
 		this.rangeMax = rangeMax;
 	}
 
+	/**
+	 * Generates the dataset
+	 * @param k
+	 * @param n
+	 * @param d
+	 * @return
+	 */
 	public ArrayList<Point> randomPoints(int k, int n, int d){
 		ArrayList<Point> mainPoints = generateMainPoints(k,d);
 		mainPoints.addAll(generateGaussianDistPoints(k, n, d, mainPoints));
@@ -29,6 +43,11 @@ public class GaussianClusterGenerator {
 	}
 	
 
+	/**
+	 * Generates specific coordinates
+	 * @param d
+	 * @return
+	 */
 	public ArrayList<Float> generateCoordinates(int d){
 		ArrayList<Float> coordinates = new ArrayList<>();
 		Random random = new Random();
@@ -40,6 +59,12 @@ public class GaussianClusterGenerator {
 		return coordinates;
 	}
 	
+	/**
+	 * Generates coordinates which are gaussian distributed
+	 * @param d
+	 * @param point
+	 * @return
+	 */
 	public ArrayList<Float> generateGaussianCoordinates(int d, Point point){
 		ArrayList<Float> coordinates = new ArrayList<>();
 		Random random = new Random();
@@ -52,6 +77,14 @@ public class GaussianClusterGenerator {
 	}
 	
 
+	/**
+	 * Checks if the distance between two points are higher or equal than the minimum distance
+	 * @param point1
+	 * @param point2
+	 * @param d
+	 * @param minPointDistance
+	 * @return
+	 */
 	public boolean isDistanceGood(Point point1, Point point2, int d, float minPointDistance) {
 		ArrayList<Float> coordinates1 = point1.getCoordinates();
 		ArrayList<Float> coordinates2 = point2.getCoordinates();
@@ -63,6 +96,12 @@ public class GaussianClusterGenerator {
 		return false;
 	}
 	
+	/**
+	 * Generates the main points
+	 * @param k
+	 * @param d
+	 * @return
+	 */
 	public ArrayList<Point> generateMainPoints(int k,int d){
 		ArrayList<Point> mainPoints = new ArrayList<>();
 		boolean distanceGood = false;
@@ -82,6 +121,14 @@ public class GaussianClusterGenerator {
 		return mainPoints;
 	}
 	
+	/**
+	 * Generates gaussian distributed points around the main points
+	 * @param k
+	 * @param n
+	 * @param d
+	 * @param mainPoints
+	 * @return
+	 */
 	public ArrayList<Point> generateGaussianDistPoints(int k,int n,int d,ArrayList<Point> mainPoints){
 		ArrayList<Point> points = new ArrayList<>();
 		for(int i=0;i<(n-k);i++){
