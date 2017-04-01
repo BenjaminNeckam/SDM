@@ -243,6 +243,7 @@ public class KMeans {
 	public static void distAndChangeClusterMacQueen(ArrayList<Point> points,ArrayList<Point> centroids,int d, int k){
 		float tmp;
 		float tmpDist=0;
+		int counter=0;
 		for(Point point:points){
 			tmp=dist(point,centroids.get(point.getClusterNumb()));
 			for(Point centroid:centroids){
@@ -251,11 +252,12 @@ public class KMeans {
 				if(tmpDist<tmp){
 					tmp=tmpDist;
 					point.setClusterNumb(centroid.getClusterNumb());
-					
+					counter++;
 					centroidUpdate(centroids, points, d, k);
 				}
 			}
 		}
+		System.out.println("Iterations until convergence: " + counter + "\n");
 	}
 	
 	/**
